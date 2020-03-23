@@ -1,0 +1,40 @@
+service:
+  name: advito-auth-server
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  environment: ${file(env.yml):${self:custom.stage}, file(env.yml):default}
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+  serverless-offline:
+    httpPort: 4000
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-2
+  apiGateway:
+    minimumCompressionSize: 1024
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    DB_HOST: ${self:custom.environment.DB_HOST}
+    DB_USER: ${self:custom.environment.DB_USER}
+    DB_PASSWORD: ${self:custom.environment.DB_PASSWORD}
+    DB_NAME: ${self:custom.environment.DB_NAME}
+    ENVIRONMENT: ${self:custom.environment.ENVIRONMENT}
+
+functions:
+  graphql:
+    handler: handler.graphqlHandler
+    events:
+      - http:
+          path: graphql
+          method: post
+      - http:
+          path: graphql
+          method: get
