@@ -45,6 +45,20 @@ functions:
       - http:
           path: graphql
           method: post
+          cors:
+            origin: '*'
+            headers:
+              - application
+              - Authorization
+              - Content-Type
+            allowCredentials: false
       - http:
           path: graphql
           method: get
+          cors:
+            origin: '*'
+            headers:
+              - application
+              - Authorization
+              - Content-Type
+            allowCredentials: false
