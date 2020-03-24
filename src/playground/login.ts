@@ -12,6 +12,7 @@ export default {
         sessionToken
         roleIds
       }
+      logout(sessionToken: "")
     }`
 	}
 }

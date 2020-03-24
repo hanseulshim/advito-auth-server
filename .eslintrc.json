@@ -19,6 +19,15 @@
 	},
 	"plugins": ["@typescript-eslint"],
 	"rules": {
-		"@typescript-eslint/ban-ts-ignore": "off"
+		"@typescript-eslint/ban-ts-ignore": "off",
+		"@typescript-eslint/member-delimiter-style": [
+			"error",
+			{
+				"multiline": {
+					"delimiter": "none",
+					"requireLast": true
+				}
+			}
+		]
 	}
 }

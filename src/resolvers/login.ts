@@ -1,11 +1,23 @@
 import { UserInputError } from 'apollo-server-lambda'
-import { AdvitoUser } from '../models'
+import { AdvitoUser, AdvitoUserSession } from '../models'
 import { saltPassword, getDateString } from '../utils'
 import crypto from 'crypto'
 
+type LoginType = {
+	id: number
+	displayName: string
+	clientId: number
+	sessionToken: string
+	roleIds: number[]
+}
+
 export default {
 	Mutation: {
-		login: async (_, { username, password }, { application }): Promise<{}> => {
+		login: async (
+			_: null,
+			{ username, password },
+			{ application }
+		): Promise<LoginType> => {
 			const user = await AdvitoUser.query()
 				.where('username', username.toLowerCase())
 				.withGraphFetched(
@@ -51,6 +63,20 @@ export default {
 				sessionToken,
 				roleIds: user.advitoUserRoleLink.map(role => role.advitoRoleId)
 			}
+		},
+		logout: async (_: null, { sessionToken }): Promise<boolean> => {
+			const session = await AdvitoUserSession.query()
+				.where('sessionToken', sessionToken)
+				.where('sessionEnd', null)
+				.first()
+			if (!session) return false
+			await AdvitoUserSession.query()
+				.patch({
+					sessionEnd: getDateString()
+				})
+				.where('sessionToken', sessionToken)
+				.where('sessionEnd', null)
+			return true
 		}
 	}
 }

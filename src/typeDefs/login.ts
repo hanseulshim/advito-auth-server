@@ -9,5 +9,6 @@ type Login {
 
 extend type Mutation {
   login(username: String!, password: String!): Login
+  logout(sessionToken: String!): Boolean
 }
 `
