@@ -1,15 +1,8 @@
 import { UserInputError } from 'apollo-server-lambda'
 import { AdvitoUser, AdvitoUserSession } from '../models'
 import { saltPassword, getDateString } from '../utils'
+import { User } from '../types'
 import crypto from 'crypto'
-
-type LoginType = {
-	id: number
-	displayName: string
-	clientId: number
-	sessionToken: string
-	roleIds: number[]
-}
 
 export default {
 	Mutation: {
@@ -17,7 +10,7 @@ export default {
 			_: null,
 			{ username, password },
 			{ application }
-		): Promise<LoginType> => {
+		): Promise<User> => {
 			const user = await AdvitoUser.query()
 				.where('username', username.toLowerCase())
 				.withGraphFetched(

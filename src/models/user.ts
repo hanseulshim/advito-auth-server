@@ -13,6 +13,7 @@ export class AdvitoUserRoleLink extends Model {
 }
 
 export class AdvitoUserSession extends Model {
+	id: number
 	sessionEnd: string
 	sessionToken: string
 	sessionStart: string
@@ -22,6 +23,8 @@ export class AdvitoUserSession extends Model {
 	sessionNote: string
 	created: string
 	modified: string
+	advitoUser: AdvitoUser[]
+	advitoUserId: number
 
 	static tableName = 'advitoUserSession'
 
@@ -50,6 +53,12 @@ export class AdvitoUser extends Model {
 
 	fullName(): string {
 		return this.nameFirst + ' ' + this.nameLast
+	}
+
+	static modifiers = {
+		getUser(builder): ModifyMethod<AnyQueryBuilder> {
+			return builder.first()
+		}
 	}
 
 	static relationMappings = {
