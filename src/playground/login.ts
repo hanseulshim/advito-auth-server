@@ -1,7 +1,9 @@
+import { getEndpoint } from '../utils'
+
 export default {
 	Mutation: {
 		name: 'Login Mutations',
-		endpoint: '',
+		endpoint: getEndpoint(),
 		headers: { Authorization: 'MY^PR3TTYP0NY' },
 		query: `
     mutation {
