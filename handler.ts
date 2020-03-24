@@ -19,6 +19,16 @@ Model.knex(
 	})
 )
 
-const server = new ApolloServer({ typeDefs, resolvers, playground })
+const server = new ApolloServer({
+	typeDefs,
+	resolvers,
+	playground
+	// context: async ({ event }): Promise<any> => {
+	// 	const sessionToken = event.headers.Authorization || ''
+	// 	const application = event.headers.application || ''
+	// 	const user = await authenticateUser(sessionToken)
+	// 	return { user, application }
+	// }
+})
 
 export const graphqlHandler = server.createHandler()

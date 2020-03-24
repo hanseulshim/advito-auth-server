@@ -1,5 +1,5 @@
-import user from './user'
+import login from './login'
 
 export default {
-	tabs: [user.Query]
+	tabs: [login.Mutation]
 }

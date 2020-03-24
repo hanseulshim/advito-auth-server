@@ -1,8 +1,8 @@
 import { gql } from 'apollo-server-lambda'
-import user from './user'
+import login from './login'
 
 export default gql`
-	${user}
+	${login}
 	type Query {
 		_empty: String
 	}
