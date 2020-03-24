@@ -27,6 +27,16 @@ provider:
     DB_PASSWORD: ${self:custom.environment.DB_PASSWORD}
     DB_NAME: ${self:custom.environment.DB_NAME}
     ENVIRONMENT: ${self:custom.environment.ENVIRONMENT}
+  vpc:
+    securityGroupIds:
+      - 'sg-09b7d9888c893594d'
+    subnetIds:
+      - 'subnet-08c1aacead6928c9f'
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'ses:*'
+      Resource: '*'
 
 functions:
   graphql:

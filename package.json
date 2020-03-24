@@ -7,7 +7,7 @@
 		"start": "sls offline -s dev",
 		"start:production": "sls offline -s production",
 		"staging": "sls deploy -s staging --aws-profile advito",
-		"dev": "sls deploy -s dev --aws-profile boost",
+		"dev": "sls deploy -s dev --aws-profile advito",
 		"production": "sls deploy -s production --aws-profile advito"
 	},
 	"dependencies": {
