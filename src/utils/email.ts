@@ -18,7 +18,8 @@ export const getUrl = (applicationId: number, token: string): string => {
 		const env = applicationId === 4 ? 'alpha' : 'dev'
 		return `https://s3.amazonaws.com/${env}.boostlabs/${urlPath}/index.html#/resetpassword?t=${token}`
 	} else if (environment === 'STAGING') {
-		return `https://s3.amazonaws.com/staging.boostlabs/${urlPath}/index.html#/resetpassword?t=${token}`
+		const env = applicationId === 4 ? 'beta' : 'staging'
+		return `https://s3.amazonaws.com/${env}.boostlabs/${urlPath}/index.html#/resetpassword?t=${token}`
 	} else if (environment === 'PRODUCTION') {
 		const env = applicationId === 4 ? 'advito-ingestion' : ''
 		return `https://s3.amazonaws.com/${env}/${urlPath}/index.html#/resetpassword?t=${token}`
