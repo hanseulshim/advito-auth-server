@@ -13,7 +13,7 @@ export const authenticateUser = async (sessionToken: string): Promise<User> => {
 
 	const { id, sessionExpiration, sessionDurationSec } = session
 
-	if (moment(sessionExpiration) <= moment()) {
+	if (moment(sessionExpiration).diff(moment()) <= 0) {
 		throw new AuthenticationError('Session has expired.')
 	}
 

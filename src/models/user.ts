@@ -43,6 +43,7 @@ export class AccessToken extends Model {
 	tokenType: string
 	token: string
 	tokenExpiration: string
+	advitoUserId: number
 
 	static tableName = 'accessToken'
 }

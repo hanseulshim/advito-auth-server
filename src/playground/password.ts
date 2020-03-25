@@ -7,7 +7,8 @@ export default {
 		headers: { Authorization: 'MY^PR3TTYP0NY', application: 4 },
 		query: `
     mutation {
-      sendResetPasswordEmail(email: "")
+			sendResetPasswordEmail(email: "")
+			resetPassword(token: "", password: "", confirmPassword: "")
     }`
 	}
 }
