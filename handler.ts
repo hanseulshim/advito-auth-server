@@ -1,5 +1,5 @@
 import 'source-map-support/register'
-import { ApolloServer } from 'apollo-server-lambda'
+import { ApolloServer, ForbiddenError } from 'apollo-server-lambda'
 import typeDefs from './src/typeDefs'
 import resolvers from './src/resolvers'
 import playground from './src/playground'
@@ -28,6 +28,9 @@ const server = new ApolloServer({
 	context: async ({ event }): Promise<Context> => {
 		const sessionToken = event.headers.Authorization || ''
 		const applicationId = +event.headers.application || null
+		if (applicationId === null) {
+			throw new ForbiddenError('Application id must be passed in')
+		}
 		const user = await authenticateUser(sessionToken)
 		return { user, applicationId }
 	}
