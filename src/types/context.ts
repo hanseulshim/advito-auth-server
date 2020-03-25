@@ -1,5 +1,5 @@
 import { User } from './user'
 export type Context = {
 	user: User
-	applicationId: string
+	applicationId: number
 }

@@ -27,7 +27,7 @@ const server = new ApolloServer({
 	playground,
 	context: async ({ event }): Promise<Context> => {
 		const sessionToken = event.headers.Authorization || ''
-		const applicationId = event.headers.application || ''
+		const applicationId = +event.headers.application || null
 		const user = await authenticateUser(sessionToken)
 		return { user, applicationId }
 	}

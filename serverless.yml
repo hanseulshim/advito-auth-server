@@ -27,6 +27,9 @@ provider:
     DB_PASSWORD: ${self:custom.environment.DB_PASSWORD}
     DB_NAME: ${self:custom.environment.DB_NAME}
     ENVIRONMENT: ${self:custom.environment.ENVIRONMENT}
+    ACCESS_KEY_ID: ${self:custom.environment.ACCESS_KEY_ID}
+    SECRET_ACCESS_KEY: ${self:custom.environment.SECRET_ACCESS_KEY}
+    REGION: ${self:custom.environment.REGION}
   vpc:
     securityGroupIds:
       - 'sg-09b7d9888c893594d'

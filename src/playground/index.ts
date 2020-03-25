@@ -1,5 +1,6 @@
 import login from './login'
+import password from './password'
 
 export default {
-	tabs: [login.Mutation]
+	tabs: [login.Mutation, password.Mutation]
 }

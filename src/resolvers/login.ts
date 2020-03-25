@@ -6,11 +6,7 @@ import crypto from 'crypto'
 
 export default {
 	Mutation: {
-		login: async (
-			_: null,
-			{ username, password },
-			{ application }
-		): Promise<User> => {
+		login: async (_: null, { username, password }): Promise<User> => {
 			const user = await AdvitoUser.query()
 				.where('username', username.toLowerCase())
 				.withGraphFetched(
@@ -38,7 +34,7 @@ export default {
 				sessionStart: getDateString(),
 				sessionEnd: null,
 				sessionDurationSec: 3600,
-				sessionType: application,
+				sessionType: 'User',
 				sessionExpiration: getDateString('session'),
 				sessionNote: null,
 				created: getDateString(),

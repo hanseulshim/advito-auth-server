@@ -38,6 +38,15 @@ export class AdvitoUserSession extends Model {
 	}
 }
 
+export class AccessToken extends Model {
+	isActive: boolean
+	tokenType: string
+	token: string
+	tokenExpiration: string
+
+	static tableName = 'accessToken'
+}
+
 export class AdvitoUser extends Model {
 	id: number
 	isEnabled: string
@@ -46,8 +55,10 @@ export class AdvitoUser extends Model {
 	nameFirst: string
 	nameLast: string
 	clientId: number
+	email: string
 	advitoUserSession: AdvitoUserSession[]
 	advitoUserRoleLink: AdvitoUserRoleLink[]
+	accessToken: AccessToken[]
 
 	static tableName = 'advitoUser'
 
@@ -76,6 +87,14 @@ export class AdvitoUser extends Model {
 			join: {
 				from: 'advitoUser.id',
 				to: 'advitoUserSession.advitoUserId'
+			}
+		},
+		accessToken: {
+			relation: Model.HasManyRelation,
+			modelClass: AccessToken,
+			join: {
+				from: 'advitoUser.id',
+				to: 'accessToken.advitoUserId'
 			}
 		}
 	}
