@@ -23,6 +23,8 @@ export const getUrl = (applicationId: number, token: string): string => {
 	} else if (environment === 'PRODUCTION') {
 		const env = applicationId === 4 ? 'advito-ingestion' : ''
 		return `https://s3.amazonaws.com/${env}/${urlPath}/index.html#/resetpassword?t=${token}`
+	} else if (environment === 'LOCAL') {
+		return `http://localhost:3000/#/resetpassword?t=${token}`
 	}
 	return null
 }
