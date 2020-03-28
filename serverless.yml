@@ -8,7 +8,7 @@ custom:
     webpackConfig: ./webpack.config.js
     includeModules: true
   serverless-offline:
-    httpPort: 4000
+    httpPort: 8080
 
 plugins:
   - serverless-webpack

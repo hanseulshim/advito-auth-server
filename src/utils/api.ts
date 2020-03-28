@@ -5,5 +5,5 @@ export const getEndpoint = (): string => {
 		? 'https://sewnh0p54a.execute-api.us-east-2.amazonaws.com/staging/graphql'
 		: process.env.ENVIRONMENT === 'PRODUCTION'
 		? 'https://lkkkz4lxwc.execute-api.us-east-2.amazonaws.com/production/graphql'
-		: 'http://localhost:4000/local/graphql'
+		: 'http://localhost:8080/local/graphql'
 }
