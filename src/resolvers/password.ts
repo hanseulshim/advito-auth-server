@@ -58,7 +58,7 @@ export default {
 			}
 			const errorMessages = checkValidPassword(password)
 			if (errorMessages.length)
-				throw new UserInputError(errorMessages.join(';'))
+				throw new UserInputError(errorMessages.join(','))
 			const accessToken = await AccessToken.query()
 				.where('token', token)
 				.first()

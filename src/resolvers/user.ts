@@ -85,7 +85,6 @@ export default {
 						.patchAndFetchById(id, patchObject)
 						.withGraphFetched('advitoUserRoleLink(advitoRoleId)')
 			if (roleIds.length) {
-				console.log(roleIds.length)
 				await user.$relatedQuery('advitoUserRoleLink').delete()
 				await user.$relatedQuery('advitoUserRoleLink').insert(
 					roleIds.map(advitoRoleId => ({
@@ -97,47 +96,56 @@ export default {
 				...user,
 				roleIds: user.advitoUserRoleLink.map(role => role.advitoRoleId)
 			}
+		},
+		updateUserPassword: async (
+			_: null,
+			{ id, password, confirmPassword }
+		): Promise<boolean> => {
+			const user = await AdvitoUser.query()
+				.findById(id)
+				.first()
+			if (!user) throw new UserInputError('User not found')
+			if (password !== confirmPassword) {
+				throw new UserInputError('Passwords do not match')
+			}
+			const errorMessages = checkValidPassword(password)
+			if (errorMessages.length) {
+				throw new UserInputError(errorMessages.join(','))
+			}
+			const { hashedPassword, salt } = saltPassword(password)
+			try {
+				await AdvitoUser.query().patchAndFetchById(id, {
+					pwd: hashedPassword,
+					userSalt: salt
+				})
+			} catch (e) {
+				return false
+			}
+			return true
+		},
+		deleteUser: async (_: null, { id }): Promise<boolean> => {
+			const user = await AdvitoUser.query()
+				.findById(id)
+				.first()
+			if (!user) throw new UserInputError('User not found')
+			try {
+				await user
+					.$relatedQuery('advitoUserSession')
+					.delete()
+					.where('advitoUserId', id)
+				await user
+					.$relatedQuery('advitoUserRoleLink')
+					.delete()
+					.where('advitoUserId', id)
+				await user
+					.$relatedQuery('accessToken')
+					.delete()
+					.where('advitoUserId', id)
+				await AdvitoUser.query().deleteById(id)
+			} catch (e) {
+				return false
+			}
+			return true
 		}
-		// updateUserPassword: async (_, { id, password, confirmPassword }) => {
-		// 	const user = await AdvitoUser.query()
-		// 		.findById(id)
-		// 		.first()
-		// 	if (!user) throw new UserInputError('User not found')
-		// 	if (password !== confirmPassword) {
-		// 		throw new UserInputError('Passwords do not match')
-		// 	}
-		// 	const errorMessages = checkValidPassword(password)
-		// 	if (errorMessages.length) throw new UserInputError(errorMessages)
-		// 	const { saltHashed, passwordHashed } = saltHash(password)
-		// 	await AdvitoUser.query().patchAndFetchById(id, {
-		// 		pwd: passwordHashed,
-		// 		userSalt: saltHashed
-		// 	})
-		// 	await user.$relatedQuery('advitoUserLog').insert({
-		// 		advitoUserId: user.id,
-		// 		activity: 'User password changed'
-		// 	})
-		// 	return 'Password has been changed'
-		// },
-		// deleteUser: async (_, { id }) => {
-		// 	const user = await AdvitoUser.query()
-		// 		.findById(id)
-		// 		.first()
-		// 	if (!user) throw new UserInputError('User not found')
-		// 	await user
-		// 		.$relatedQuery('advitoUserSession')
-		// 		.delete()
-		// 		.where('advitoUserId', id)
-		// 	await user
-		// 		.$relatedQuery('advitoUserRoleLink')
-		// 		.delete()
-		// 		.where('advitoUserId', id)
-		// 	await user
-		// 		.$relatedQuery('accessToken')
-		// 		.delete()
-		// 		.where('advitoUserId', id)
-		// 	await AdvitoUser.query().deleteById(id)
-		// 	return true
-		// }
 	}
 }

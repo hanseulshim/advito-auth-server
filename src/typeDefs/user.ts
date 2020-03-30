@@ -41,13 +41,13 @@ extend type Mutation {
     defaultDateFormat: String
     roleIds: [Int]
   ): User @auth
+  updateUserPassword(
+    id: Int!
+    password: String!
+    confirmPassword: String!
+  ): Boolean @auth
+  deleteUser(
+    id: Int!
+  ): Boolean @auth
 }
 `
-// updateUserPassword(
-//   id: Int!
-//   password: String!
-//   confirmPassword: String!
-// ): String @auth
-// deleteUser(
-//   id: Int!
-// ): Boolean @auth
