@@ -1,7 +1,7 @@
 import { SchemaDirectiveVisitor, ApolloError } from 'apollo-server-lambda'
 import { defaultFieldResolver, GraphQLField } from 'graphql'
 
-export class RequireAuthDirective extends SchemaDirectiveVisitor {
+export default class RequireAuthDirective extends SchemaDirectiveVisitor {
 	// eslint-disable-next-line
 	visitFieldDefinition(field: GraphQLField<any, any>) {
 		const { resolve = defaultFieldResolver } = field
@@ -9,6 +9,9 @@ export class RequireAuthDirective extends SchemaDirectiveVisitor {
 		field.resolve = async (...args) => {
 			const [, , context] = args
 			if (context.user) {
+				if (context.user.roleIds.length === 0) {
+					throw new ApolloError('User did not have any roles', '401')
+				}
 				return resolve.apply(this, args)
 			} else {
 				throw new ApolloError(
@@ -19,23 +22,3 @@ export class RequireAuthDirective extends SchemaDirectiveVisitor {
 		}
 	}
 }
-
-// export default class RequireAuthDirective extends SchemaDirectiveVisitor {
-// 	visitFieldDefinition(field) {
-// 		const { resolve = this.defaultFieldResolver } = field
-// 		field.resolve = async (...args) => {
-// 			const [, , context] = args
-// 			if (context.user) {
-// 				// const roleIds = context.user.roleIds.map(role => parseInt(role))
-// 				// const idExists = IA_ROLES.some(role => roleIds.indexOf(role) >= 0)
-// 				// if (!idExists) { throw new ApolloError('User did not have I&A role', 401) }
-// 				return resolve.apply(this, args)
-// 			} else {
-// 				throw new ApolloError(
-// 					'You must be signed in to view this resource.',
-// 					'401'
-// 				)
-// 			}
-// 		}
-// 	}
-// }

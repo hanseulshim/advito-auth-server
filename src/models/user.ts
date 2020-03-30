@@ -50,7 +50,7 @@ export class AccessToken extends Model {
 
 export class AdvitoUser extends Model {
 	id: number
-	isEnabled: string
+	isEnabled: boolean
 	pwd: string
 	userSalt: string
 	nameFirst: string
@@ -60,6 +60,14 @@ export class AdvitoUser extends Model {
 	advitoUserSession: AdvitoUserSession[]
 	advitoUserRoleLink: AdvitoUserRoleLink[]
 	accessToken: AccessToken[]
+	username: string
+	isVerified: boolean
+	mustChangePwd: boolean
+	defaultTimezone: string
+	defaultLanguage: string
+	defaultDateFormat: string
+	phone: string
+	address: string
 
 	static tableName = 'advitoUser'
 

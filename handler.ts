@@ -3,6 +3,7 @@ import { ApolloServer, ForbiddenError } from 'apollo-server-lambda'
 import typeDefs from './src/typeDefs'
 import resolvers from './src/resolvers'
 import playground from './src/playground'
+import RequireAuthDirective from './src/authDirective'
 import Knex from 'knex'
 import { Context } from './src/types'
 import { Model, knexSnakeCaseMappers } from 'objection'
@@ -33,6 +34,9 @@ const server = new ApolloServer({
 		}
 		const user = await authenticateUser(sessionToken)
 		return { user, applicationId }
+	},
+	schemaDirectives: {
+		auth: RequireAuthDirective
 	}
 })
 
