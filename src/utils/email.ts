@@ -8,6 +8,7 @@ import { EmailTemplate } from '../models'
 
 const getUrlPath = (applicationId: number): string => {
 	if (applicationId === 4) return 'advito-ingestion'
+	else if (applicationId === 5) return 'advito-case-lodgic'
 	return null
 }
 
