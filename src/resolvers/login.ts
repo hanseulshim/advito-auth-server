@@ -59,6 +59,7 @@ export default {
 				.where('sessionEnd', null)
 				.first()
 			if (!session) return false
+			if (+session.advitoUserId === 882) return true // return if user is the advito session token user
 			await AdvitoUserSession.query()
 				.patch({
 					sessionEnd: getDateString()
