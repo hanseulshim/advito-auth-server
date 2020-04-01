@@ -65,7 +65,7 @@ export default {
 					sessionEnd: getDateString()
 				})
 				.where('sessionToken', sessionToken)
-				.where('sessionEnd', null)
+				.andWhere('sessionEnd', null)
 			return true
 		}
 	}
