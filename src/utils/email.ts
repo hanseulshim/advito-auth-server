@@ -15,15 +15,23 @@ const getUrlPath = (applicationId: number): string => {
 export const getUrl = (applicationId: number, token: string): string => {
 	const urlPath = getUrlPath(applicationId)
 	const environment = process.env.ENVIRONMENT
-	if (environment === 'DEV') {
-		const env = applicationId === 4 ? 'alpha' : 'dev'
-		return `https://s3.amazonaws.com/${env}.boostlabs/${urlPath}/index.html#/resetpassword?t=${token}`
+	const resetPath = `index.html#/resetpassword?t=${token}`
+	if (applicationId === 4) {
+		if (environment === 'DEV') {
+			return `https://s3.amazonaws.com/alpha.boostlabs/${urlPath}/${resetPath}`
+		} else if (environment === 'STAGING') {
+			return `https://s3.amazonaws.com/beta.boostlabs/${urlPath}/${resetPath}`
+		} else if (environment === 'PRODUCTION') {
+			return `https://ingestion-console.advito.com/${resetPath}`
+		} else if (environment === 'LOCAL') {
+			return `http://localhost:3000/#/resetpassword?t=${token}`
+		}
+	} else if (environment === 'DEV') {
+		return `https://s3.amazonaws.com/dev.boostlabs/${urlPath}/${resetPath}`
 	} else if (environment === 'STAGING') {
-		const env = applicationId === 4 ? 'beta' : 'staging'
-		return `https://s3.amazonaws.com/${env}.boostlabs/${urlPath}/index.html#/resetpassword?t=${token}`
+		return `https://s3.amazonaws.com/staging.boostlabs/${urlPath}/${resetPath}`
 	} else if (environment === 'PRODUCTION') {
-		const env = applicationId === 4 ? 'advito-ingestion' : ''
-		return `https://s3.amazonaws.com/${env}/${urlPath}/index.html#/resetpassword?t=${token}`
+		return `https://s3.amazonaws.com/${urlPath}/${resetPath}`
 	} else if (environment === 'LOCAL') {
 		return `http://localhost:3000/#/resetpassword?t=${token}`
 	}
