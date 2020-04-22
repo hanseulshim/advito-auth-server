@@ -32,7 +32,7 @@ export default {
 					})
 					.where('sessionEnd', null)
 			}
-			const roleIds = user.advitoUserRoleLink.map((role) => role.advitoRoleId)
+			const roleIds = user.advitoUserRoleLink.map((role) => +role.advitoRoleId)
 			if (applicationId === 4) {
 				if (!roleIds.includes(12) && !roleIds.includes(13))
 					throw new ForbiddenError('User has invalid roles')
