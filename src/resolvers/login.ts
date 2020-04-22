@@ -1,4 +1,4 @@
-import { UserInputError } from 'apollo-server-lambda'
+import { UserInputError, ForbiddenError } from 'apollo-server-lambda'
 import { AdvitoUser, AdvitoUserSession } from '../models'
 import { saltPassword, getDateString } from '../utils'
 import { User } from '../types'
@@ -6,7 +6,11 @@ import crypto from 'crypto'
 
 export default {
 	Mutation: {
-		login: async (_: null, { username, password }): Promise<User> => {
+		login: async (
+			_: null,
+			{ username, password },
+			{ applicationId }
+		): Promise<User> => {
 			const user = await AdvitoUser.query()
 				.where('username', username.toLowerCase())
 				.withGraphFetched(
@@ -27,6 +31,11 @@ export default {
 						sessionEnd: getDateString()
 					})
 					.where('sessionEnd', null)
+			}
+			const roleIds = user.advitoUserRoleLink.map((role) => role.advitoRoleId)
+			if (applicationId === 4) {
+				if (!roleIds.includes(12) && !roleIds.includes(13))
+					throw new ForbiddenError('User has invalid roles')
 			}
 			const sessionToken = crypto.randomBytes(16).toString('base64')
 			await user.$relatedQuery('advitoUserSession').insert({
@@ -50,7 +59,7 @@ export default {
 				displayName: user.fullName(),
 				clientId: user.clientId,
 				sessionToken,
-				roleIds: user.advitoUserRoleLink.map(role => role.advitoRoleId)
+				roleIds
 			}
 		},
 		logout: async (_: null, { sessionToken }): Promise<boolean> => {

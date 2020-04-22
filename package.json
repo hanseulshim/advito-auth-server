@@ -10,7 +10,8 @@
 		"start:production": "nodemon -e js,ts,yml --ignore node_modules --exec \"sls offline -s production\"",
 		"staging": "sls deploy -s staging --aws-profile advito",
 		"dev": "sls deploy -s dev --aws-profile advito",
-		"production": "sls deploy -s production --aws-profile advito"
+		"production": "sls deploy -s production --aws-profile advito",
+		"all": "yarn dev && yarn staging && yarn production"
 	},
 	"dependencies": {
 		"apollo-server-lambda": "^2.11.0",
