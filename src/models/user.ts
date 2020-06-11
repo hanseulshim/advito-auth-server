@@ -1,4 +1,4 @@
-import { Model, ModifyMethod, AnyQueryBuilder } from 'objection'
+import { AnyQueryBuilder, Model, ModifyMethod } from 'objection'
 
 export class AdvitoUserRoleLink extends Model {
 	advitoRoleId: number
@@ -33,7 +33,7 @@ export class AdvitoUserSession extends Model {
 			return builder
 				.where('sessionEnd', null)
 				.first()
-				.select('sessionToken')
+				.select('sessionToken', 'sessionExpiration')
 		}
 	}
 }
