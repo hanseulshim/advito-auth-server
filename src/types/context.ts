@@ -1,5 +1,4 @@
-import { User } from './user'
 export type Context = {
-	user: User
+	// user: User
 	applicationId: number
 }

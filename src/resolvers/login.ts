@@ -1,8 +1,9 @@
-import { UserInputError, ForbiddenError } from 'apollo-server-lambda'
-import { AdvitoUser, AdvitoUserSession } from '../models'
-import { saltPassword, getDateString } from '../utils'
-import { User } from '../types'
+import { ForbiddenError, UserInputError } from 'apollo-server-lambda'
 import crypto from 'crypto'
+import moment from 'moment'
+import { AdvitoUser, AdvitoUserSession } from '../models'
+import { User } from '../types'
+import { getDateString, saltPassword } from '../utils'
 
 export default {
 	Mutation: {
@@ -24,7 +25,19 @@ export default {
 			if (pwd !== hashedPassword) {
 				throw new UserInputError('Password is incorrect')
 			}
-			if (user.advitoUserSession.length) {
+			const userSession = user.advitoUserSession[0]
+			let sessionToken = crypto.randomBytes(16).toString('base64')
+
+			if (
+				userSession &&
+				moment(userSession.sessionExpiration).diff(moment()) >= 0
+			) {
+				sessionToken = userSession.sessionToken
+			}
+			if (
+				userSession &&
+				moment(userSession.sessionExpiration).diff(moment()) <= 0
+			) {
 				await user
 					.$relatedQuery('advitoUserSession')
 					.patch({
@@ -32,23 +45,29 @@ export default {
 					})
 					.where('sessionEnd', null)
 			}
+			if (
+				!userSession ||
+				(userSession &&
+					moment(userSession.sessionExpiration).diff(moment()) <= 0)
+			) {
+				await user.$relatedQuery('advitoUserSession').insert({
+					sessionToken,
+					sessionStart: getDateString(),
+					sessionEnd: null,
+					sessionDurationSec: 3600,
+					sessionType: 'User',
+					sessionExpiration: getDateString('session'),
+					sessionNote: null,
+					created: getDateString(),
+					modified: getDateString()
+				})
+			}
 			const roleIds = user.advitoUserRoleLink.map((role) => +role.advitoRoleId)
 			if (applicationId === 4) {
 				if (!roleIds.includes(12) && !roleIds.includes(13))
 					throw new ForbiddenError('User has invalid roles')
 			}
-			const sessionToken = crypto.randomBytes(16).toString('base64')
-			await user.$relatedQuery('advitoUserSession').insert({
-				sessionToken,
-				sessionStart: getDateString(),
-				sessionEnd: null,
-				sessionDurationSec: 3600,
-				sessionType: 'User',
-				sessionExpiration: getDateString('session'),
-				sessionNote: null,
-				created: getDateString(),
-				modified: getDateString()
-			})
+
 			// TODO enable this eventually
 			// await user.$relatedQuery('advitoUserLog').insert({
 			//   advitoUserId: user.id,
